@@ -22,6 +22,7 @@ export interface SessionResult {
   correctCount: number;
   accuracy: number;
   timeMs: number | null;
+  direction?: 'forward' | 'backward';
 }
 
 export interface Stats {
