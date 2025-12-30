@@ -1,4 +1,4 @@
-import type { GridConfig, Operation } from '../types';
+import type { GridConfig, Operation } from '../../../types';
 
 interface ControlsProps {
   config: GridConfig;

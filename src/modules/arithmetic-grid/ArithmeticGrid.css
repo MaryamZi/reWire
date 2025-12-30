@@ -1,0 +1,110 @@
+/* Grid */
+.grid-container {
+  overflow-x: auto;
+}
+
+.arithmetic-grid {
+  border-collapse: collapse;
+}
+
+.arithmetic-grid th,
+.arithmetic-grid td {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.arithmetic-grid th {
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.corner {
+  color: var(--text-muted);
+}
+
+.row-header,
+.col-header {
+  background: var(--bg);
+}
+
+.arithmetic-grid td {
+  border: 1px solid var(--border);
+}
+
+/* Cell */
+.cell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cell input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  text-align: center;
+  font-size: 1rem;
+  font-family: inherit;
+  background: transparent;
+}
+
+.cell input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.cell input:disabled {
+  color: var(--text);
+  -webkit-text-fill-color: var(--text);
+  opacity: 1;
+}
+
+.cell.correct {
+  background: var(--correct-bg);
+}
+
+.cell.incorrect {
+  background: var(--incorrect-bg);
+}
+
+.cell.incorrect input {
+  text-decoration: line-through;
+  color: var(--incorrect);
+}
+
+.correct-answer {
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  font-size: 0.625rem;
+  color: var(--correct);
+  font-weight: 600;
+}
+
+/* Module-specific buttons */
+.start-button,
+.submit-button,
+.try-again-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 500;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.start-button:hover,
+.submit-button:hover,
+.try-again-button:hover {
+  opacity: 0.9;
+}
+
+.submit-button:disabled {
+  background: var(--border);
+  cursor: not-allowed;
+}

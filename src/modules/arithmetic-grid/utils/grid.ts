@@ -1,4 +1,4 @@
-import type { Operation } from '../types';
+import type { Operation } from '../../../types';
 
 function pickUnique(count: number, min: number, max: number): number[] {
   const range = Array.from({ length: max - min + 1 }, (_, i) => min + i);

@@ -15,6 +15,7 @@ export interface GridData {
 
 export interface SessionResult {
   timestamp: number;
+  moduleId: string;
   operation: Operation;
   gridSize: string;
   totalCells: number;

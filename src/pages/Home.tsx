@@ -1,0 +1,41 @@
+import { ModuleCard } from '../components/ModuleCard';
+import { Stats } from '../components/Stats';
+import type { ModuleDefinition } from '../types/module';
+import type { Stats as StatsType } from '../types';
+
+interface HomeProps {
+  modules: ModuleDefinition[];
+  stats: StatsType;
+  onModuleSelect: (moduleId: string) => void;
+  onClearStats: () => void;
+  formatTime: (ms: number) => string;
+}
+
+export function Home({ modules, stats, onModuleSelect, onClearStats, formatTime }: HomeProps) {
+  return (
+    <>
+      <header className="app-header">
+        <h1>reWire</h1>
+        <p className="tagline">Train your brain, one session at a time</p>
+      </header>
+
+      <main className="app-main">
+        <div className="module-grid">
+          {modules.map(module => (
+            <ModuleCard
+              key={module.id}
+              module={module}
+              onClick={() => onModuleSelect(module.id)}
+            />
+          ))}
+        </div>
+
+        <Stats
+          sessions={stats.sessions}
+          formatTime={formatTime}
+          onClear={onClearStats}
+        />
+      </main>
+    </>
+  );
+}

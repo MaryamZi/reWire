@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Cell } from './Cell';
 import { getCorrectAnswer } from '../utils/grid';
-import type { Operation } from '../types';
+import type { Operation } from '../../../types';
 
 interface GridProps {
   rowHeaders: number[];
