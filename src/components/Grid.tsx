@@ -1,6 +1,7 @@
-import { useRef, useCallback } from 'react';
+import { useCallback } from 'react';
 import { Cell } from './Cell';
 import { getCorrectAnswer } from '../utils/grid';
+import type { Operation } from '../types';
 
 interface GridProps {
   rowHeaders: number[];
@@ -9,6 +10,7 @@ interface GridProps {
   validation: boolean[][] | null;
   showResult: boolean;
   disabled: boolean;
+  operation: Operation;
   onAnswerChange: (row: number, col: number, value: number | null) => void;
   onSubmit?: () => void;
 }
@@ -20,10 +22,10 @@ export function Grid({
   validation,
   showResult,
   disabled,
+  operation,
   onAnswerChange,
   onSubmit
 }: GridProps) {
-  const cellRefs = useRef<Map<string, HTMLInputElement>>(new Map());
 
   const focusCell = useCallback((row: number, col: number) => {
     const key = `${row}-${col}`;
@@ -71,7 +73,7 @@ export function Grid({
       <table className="arithmetic-grid">
         <thead>
           <tr>
-            <th className="corner">+</th>
+            <th className="corner">{operation}</th>
             {colHeaders.map((num, i) => (
               <th key={i} className="col-header">{num}</th>
             ))}
@@ -87,7 +89,7 @@ export function Grid({
                     value={userAnswers[rowIndex][colIndex]}
                     onChange={(value) => onAnswerChange(rowIndex, colIndex, value)}
                     isCorrect={validation?.[rowIndex][colIndex]}
-                    correctAnswer={getCorrectAnswer(rowHeaders, colHeaders, rowIndex, colIndex)}
+                    correctAnswer={getCorrectAnswer(rowHeaders, colHeaders, rowIndex, colIndex, operation)}
                     showResult={showResult}
                     disabled={disabled}
                     autoFocus={rowIndex === 0 && colIndex === 0}

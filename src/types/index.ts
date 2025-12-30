@@ -1,6 +1,9 @@
+export type Operation = '+' | '−' | '×' | '÷';
+
 export interface GridConfig {
   rows: number;
   cols: number;
+  operation: Operation;
   timerEnabled: boolean;
 }
 
@@ -12,6 +15,7 @@ export interface GridData {
 
 export interface SessionResult {
   timestamp: number;
+  operation: Operation;
   gridSize: string;
   totalCells: number;
   correctCount: number;

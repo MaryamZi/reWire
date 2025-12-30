@@ -11,9 +11,10 @@ Mental skill maintenance for technical adults. Short, focused exercises to rebui
 
 ## Modules
 
-### Addition Grid
-Fill a grid with row + column sums. Rebuilds arithmetic fluency and working memory.
+### Arithmetic Grid
+Fill a grid with the result of row ○ column. Rebuilds arithmetic fluency and working memory.
 
+- Operations: addition, subtraction, multiplication, division
 - Configurable size (3×3 to 6×6)
 - Optional timer (off by default)
 - Immediate feedback on submission

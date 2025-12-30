@@ -16,6 +16,7 @@ import type { GridConfig, GridData, SessionResult, AppPhase, Stats as StatsType 
 const DEFAULT_CONFIG: GridConfig = {
   rows: 4,
   cols: 4,
+  operation: '+',
   timerEnabled: false
 };
 
@@ -29,8 +30,7 @@ function App() {
   const timer = useTimer();
 
   const handleStart = useCallback(() => {
-    const rowHeaders = generateHeaders(config.rows);
-    const colHeaders = generateHeaders(config.cols);
+    const { rowHeaders, colHeaders } = generateHeaders(config.rows, config.cols, config.operation);
     const userAnswers = createEmptyAnswers(config.rows, config.cols);
 
     setGridData({ rowHeaders, colHeaders, userAnswers });
@@ -61,7 +61,8 @@ function App() {
     const result = validateAnswers(
       gridData.rowHeaders,
       gridData.colHeaders,
-      gridData.userAnswers
+      gridData.userAnswers,
+      config.operation
     );
     setValidation(result);
 
@@ -71,6 +72,7 @@ function App() {
 
     const sessionResult: SessionResult = {
       timestamp: Date.now(),
+      operation: config.operation,
       gridSize: `${config.rows}×${config.cols}`,
       totalCells,
       correctCount,
@@ -125,6 +127,7 @@ function App() {
               validation={validation}
               showResult={phase === 'results'}
               disabled={phase === 'results'}
+              operation={config.operation}
               onAnswerChange={handleAnswerChange}
               onSubmit={phase === 'active' && allFilled ? handleSubmit : undefined}
             />

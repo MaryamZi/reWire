@@ -1,4 +1,4 @@
-import type { GridConfig } from '../types';
+import type { GridConfig, Operation } from '../types';
 
 interface ControlsProps {
   config: GridConfig;
@@ -13,12 +13,23 @@ const GRID_SIZES = [
   { label: '6×6', rows: 6, cols: 6 },
 ];
 
+const OPERATIONS: { value: Operation; label: string }[] = [
+  { value: '+', label: 'Addition (+)' },
+  { value: '−', label: 'Subtraction (−)' },
+  { value: '×', label: 'Multiplication (×)' },
+  { value: '÷', label: 'Division (÷)' },
+];
+
 export function Controls({ config, onConfigChange, onStart }: ControlsProps) {
   const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const size = GRID_SIZES.find(s => s.label === e.target.value);
     if (size) {
       onConfigChange({ ...config, rows: size.rows, cols: size.cols });
     }
+  };
+
+  const handleOperationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onConfigChange({ ...config, operation: e.target.value as Operation });
   };
 
   const handleTimerToggle = () => {
@@ -29,6 +40,21 @@ export function Controls({ config, onConfigChange, onStart }: ControlsProps) {
 
   return (
     <div className="controls">
+      <div className="control-group">
+        <label htmlFor="operation">Operation</label>
+        <select
+          id="operation"
+          value={config.operation}
+          onChange={handleOperationChange}
+        >
+          {OPERATIONS.map(op => (
+            <option key={op.value} value={op.value}>
+              {op.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="control-group">
         <label htmlFor="grid-size">Grid size</label>
         <select
