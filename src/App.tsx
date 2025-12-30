@@ -126,6 +126,7 @@ function App() {
               showResult={phase === 'results'}
               disabled={phase === 'results'}
               onAnswerChange={handleAnswerChange}
+              onSubmit={phase === 'active' && allFilled ? handleSubmit : undefined}
             />
 
             {phase === 'active' && (

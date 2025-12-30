@@ -10,6 +10,7 @@ interface GridProps {
   showResult: boolean;
   disabled: boolean;
   onAnswerChange: (row: number, col: number, value: number | null) => void;
+  onSubmit?: () => void;
 }
 
 export function Grid({
@@ -19,7 +20,8 @@ export function Grid({
   validation,
   showResult,
   disabled,
-  onAnswerChange
+  onAnswerChange,
+  onSubmit
 }: GridProps) {
   const cellRefs = useRef<Map<string, HTMLInputElement>>(new Map());
 
@@ -52,6 +54,9 @@ export function Grid({
         } else if (row < rowHeaders.length - 1) {
           newRow = row + 1;
           newCol = 0;
+        } else if (onSubmit) {
+          onSubmit();
+          return;
         }
         break;
     }
@@ -59,7 +64,7 @@ export function Grid({
     if (newRow !== row || newCol !== col) {
       focusCell(newRow, newCol);
     }
-  }, [rowHeaders.length, colHeaders.length, focusCell]);
+  }, [rowHeaders.length, colHeaders.length, focusCell, onSubmit]);
 
   return (
     <div className="grid-container">
