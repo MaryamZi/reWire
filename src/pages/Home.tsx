@@ -12,11 +12,19 @@ interface HomeProps {
 }
 
 export function Home({ modules, stats, onModuleSelect, onClearStats, formatTime }: HomeProps) {
+  const handleRandom = () => {
+    const randomModule = modules[Math.floor(Math.random() * modules.length)];
+    onModuleSelect(randomModule.id);
+  };
+
   return (
     <>
       <header className="app-header">
         <h1>reWire</h1>
         <p className="tagline">Train your brain, one session at a time</p>
+        <button className="random-button" onClick={handleRandom}>
+          Random
+        </button>
       </header>
 
       <main className="app-main">
