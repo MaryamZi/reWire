@@ -1,7 +1,7 @@
 .app {
-  max-width: 1000px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: var(--space-xl) var(--space-md);
+  padding: var(--space-xl) var(--space-lg);
   min-height: 100vh;
 }
 
@@ -11,15 +11,18 @@
 }
 
 .app-header h1 {
-  font-size: 1.75rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--text);
 }
 
 .tagline {
   color: var(--text-muted);
-  font-size: 0.9375rem;
-  margin-top: var(--space-xs);
+  font-size: 1rem;
+  margin-top: var(--space-sm);
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 .app-main {
@@ -34,11 +37,12 @@
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
   border: none;
   border-radius: var(--radius-sm);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
   color: var(--text-muted);
   background: transparent;
   cursor: pointer;

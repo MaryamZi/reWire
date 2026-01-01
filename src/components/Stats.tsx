@@ -38,7 +38,7 @@ export function Stats({ sessions, formatTime, onClear }: StatsProps) {
       <summary>History ({sessions.length} sessions)</summary>
       <div className="stats-content">
         {moduleIds.map(moduleId => {
-          const moduleSessions = byModule[moduleId].slice(-10).reverse();
+          const moduleSessions = [...byModule[moduleId]].reverse();
           const showOperation = moduleId === 'arithmetic-grid';
 
           const isDigitSpan = moduleId === 'digit-span';
