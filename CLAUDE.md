@@ -1,6 +1,6 @@
 # reWire
 
-Mental skill maintenance web app for technical adults.
+Mental skill maintenance web app.
 
 ## Core Principles
 

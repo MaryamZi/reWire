@@ -1,6 +1,6 @@
 # reWire
 
-Mental skill maintenance for technical adults. Short, focused exercises to rebuild abilities we've offloaded to tools.
+Mental skill maintenance. Short, focused exercises to rebuild abilities we've offloaded to tools.
 
 ## Principles
 

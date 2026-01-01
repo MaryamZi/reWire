@@ -1,0 +1,254 @@
+.stroop {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.stroop .module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border);
+}
+
+.stroop .progress {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.stroop .timer {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+/* Setup Panel */
+.stroop .setup-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  gap: var(--space-lg);
+}
+
+.stroop .instructions {
+  text-align: center;
+  color: var(--text-muted);
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.stroop .instructions strong {
+  color: var(--text);
+}
+
+.stroop .setting-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.stroop .setting-group label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stroop .button-group {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.stroop .button-group button {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-size: 0.9rem;
+}
+
+.stroop .button-group button:hover {
+  border-color: var(--text-muted);
+}
+
+.stroop .button-group button.active {
+  background: var(--text);
+  color: var(--bg-card);
+  border-color: var(--text);
+}
+
+.stroop .key-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.stroop .key {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.stroop .start-button {
+  margin-top: var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
+  font-size: 1.1rem;
+  background: var(--text);
+  color: var(--bg-card);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: opacity var(--transition-normal);
+}
+
+.stroop .start-button:hover {
+  opacity: 0.9;
+}
+
+/* Play Area */
+.stroop .play-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  gap: var(--space-xl);
+}
+
+.stroop .word-display {
+  padding: var(--space-lg) var(--space-xl);
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.15s ease;
+}
+
+.stroop .word-display.correct {
+  border-color: #198754;
+}
+
+.stroop .word-display.incorrect {
+  border-color: #dc3545;
+}
+
+.stroop .word-display span {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  user-select: none;
+}
+
+.stroop .color-buttons {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.stroop .color-button {
+  width: 64px;
+  height: 64px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.stroop .color-button:hover:not(:disabled) {
+  transform: scale(1.08);
+}
+
+.stroop .color-button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.stroop .color-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Results Panel */
+.stroop .results-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-xl);
+  gap: var(--space-lg);
+}
+
+.stroop .result-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.stroop .result-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stroop .result-value {
+  font-size: 4rem;
+  font-weight: 300;
+}
+
+.stroop .result-stats {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.stroop .stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.stroop .stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.stroop .stat-value {
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Result Actions */
+.stroop .result-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.stroop .result-actions button {
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.stroop .result-actions button:hover {
+  background: var(--text);
+  color: var(--bg-card);
+  border-color: var(--text);
+}
