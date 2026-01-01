@@ -1,0 +1,283 @@
+.spell-check {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.spell-check .module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border);
+}
+
+.spell-check .progress {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.spell-check .timer {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+/* Setup Panel */
+.spell-check .setup-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  gap: var(--space-lg);
+}
+
+.spell-check .instructions {
+  text-align: center;
+  color: var(--text-muted);
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.spell-check .instructions strong {
+  color: var(--text);
+}
+
+.spell-check .setting-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.spell-check .setting-group label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.spell-check .button-group {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.spell-check .button-group button {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-size: 0.9rem;
+}
+
+.spell-check .button-group button:hover {
+  border-color: var(--text-muted);
+}
+
+.spell-check .button-group button.active {
+  background: var(--text);
+  color: var(--bg-card);
+  border-color: var(--text);
+}
+
+.spell-check .key-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.spell-check .key {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.spell-check .start-button {
+  margin-top: var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
+  font-size: 1.1rem;
+  background: var(--text);
+  color: var(--bg-card);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: opacity var(--transition-normal);
+}
+
+.spell-check .start-button:hover {
+  opacity: 0.9;
+}
+
+/* Play Area */
+.spell-check .play-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  gap: var(--space-xl);
+}
+
+.spell-check .word-display {
+  padding: var(--space-lg) var(--space-xl);
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.15s ease;
+  min-width: 200px;
+  text-align: center;
+}
+
+.spell-check .word-display.correct {
+  border-color: var(--correct);
+}
+
+.spell-check .word-display.incorrect {
+  border-color: var(--incorrect);
+}
+
+.spell-check .word {
+  font-size: 2.5rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+.spell-check .answer-buttons {
+  display: flex;
+  gap: var(--space-lg);
+}
+
+.spell-check .answer-button {
+  padding: var(--space-md) var(--space-xl);
+  font-size: 1.1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  min-width: 120px;
+}
+
+.spell-check .answer-button:hover:not(:disabled) {
+  transform: scale(1.02);
+}
+
+.spell-check .answer-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.spell-check .answer-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spell-check .correct-btn:hover:not(:disabled) {
+  border-color: var(--correct);
+  color: var(--correct);
+}
+
+.spell-check .wrong-btn:hover:not(:disabled) {
+  border-color: var(--incorrect);
+  color: var(--incorrect);
+}
+
+/* Feedback */
+.spell-check .feedback-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.spell-check .feedback-text.correct {
+  color: var(--correct);
+}
+
+.spell-check .feedback-text.incorrect {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Results Panel */
+.spell-check .results-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-xl);
+  gap: var(--space-lg);
+}
+
+.spell-check .result-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.spell-check .result-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.spell-check .result-value {
+  font-size: 4rem;
+  font-weight: 300;
+}
+
+.spell-check .result-stats {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.spell-check .stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.spell-check .stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.spell-check .stat-value {
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Result Actions */
+.spell-check .result-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.spell-check .result-actions button {
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.spell-check .result-actions button:hover {
+  background: var(--text);
+  color: var(--bg-card);
+  border-color: var(--text);
+}
