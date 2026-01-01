@@ -27,7 +27,7 @@ export function SpellCheck({ onBack, onSessionComplete }: ModuleProps) {
   const [completedTrials, setCompletedTrials] = useState<CompletedTrial[]>([]);
   const [currentTrialIndex, setCurrentTrialIndex] = useState(0);
   const [trialStartTime, setTrialStartTime] = useState(0);
-  const [lastResult, setLastResult] = useState<{ wasRight: boolean; correctSpelling: string } | null>(null);
+  const [lastResult, setLastResult] = useState<{ wasRight: boolean; correctSpelling: string; wordWasCorrect: boolean } | null>(null);
 
   const timer = useTimer();
 
@@ -56,7 +56,7 @@ export function SpellCheck({ onBack, onSessionComplete }: ModuleProps) {
     };
 
     setCompletedTrials(prev => [...prev, completed]);
-    setLastResult({ wasRight, correctSpelling: trial.sourceWord });
+    setLastResult({ wasRight, correctSpelling: trial.sourceWord, wordWasCorrect: trial.isCorrect });
     setPhase('feedback');
 
     // Longer pause on mistakes so user can read the correct spelling
@@ -198,7 +198,11 @@ export function SpellCheck({ onBack, onSessionComplete }: ModuleProps) {
 
           {phase === 'feedback' && lastResult && (
             <div className={`feedback-text ${lastResult.wasRight ? 'correct' : 'incorrect'}`}>
-              {lastResult.wasRight ? 'Correct!' : `Correct spelling: ${lastResult.correctSpelling}`}
+              {lastResult.wasRight
+                ? 'Correct!'
+                : lastResult.wordWasCorrect
+                  ? 'It was spelled correctly'
+                  : `Correct spelling: ${lastResult.correctSpelling}`}
             </div>
           )}
         </div>
