@@ -11,15 +11,12 @@ Mental skill maintenance. Short, focused exercises to rebuild abilities we've of
 
 ## Modules
 
-### Arithmetic Grid
-Fill a grid with the result of row ○ column. Rebuilds arithmetic fluency and working memory.
-
-- Operations: addition, subtraction, multiplication, division
-- Configurable size (3×3 to 6×6)
-- Optional timer (off by default)
-- Immediate feedback on submission
-
-*More modules planned.*
+- **Arithmetic Grid** — Fill a grid with the result of row ○ column
+- **Digit Span** — Remember and recall number sequences
+- **Stroop Test** — Name the ink color, not the word
+- **Number Sequences** — Find the pattern, predict the next number
+- **Spell Check** — Spot the misspelled words
+- **Mental Map** — Follow directions from memory
 
 ## Run
 
