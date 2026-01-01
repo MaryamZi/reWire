@@ -1,0 +1,432 @@
+import { useState, useCallback, useEffect } from 'react';
+import { useTimer } from '../../hooks/useTimer';
+import {
+  generateDirections,
+  applyDirection,
+  cellsMatch,
+  DIRECTION_ARROWS,
+  DIRECTION_KEYS,
+  type Cell,
+  type DirectionSet
+} from './paths';
+import type { ModuleProps } from '../../types/module';
+import type { SessionResult } from '../../types';
+import './MentalMap.css';
+
+type Phase = 'setup' | 'read' | 'navigate' | 'feedback' | 'results';
+
+interface Settings {
+  gridSize: number;
+  stepCount: number;
+  rounds: number;
+  readTime: number; // seconds
+}
+
+interface TrialResult {
+  directions: DirectionSet;
+  finalPosition: Cell;
+  correct: boolean;
+}
+
+function cellKey(cell: Cell): string {
+  return `${cell[0]},${cell[1]}`;
+}
+
+export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
+  const [phase, setPhase] = useState<Phase>('setup');
+  const [settings, setSettings] = useState<Settings>({
+    gridSize: 5,
+    stepCount: 5,
+    rounds: 3,
+    readTime: 5
+  });
+
+  const [currentRound, setCurrentRound] = useState(0);
+  const [currentDirections, setCurrentDirections] = useState<DirectionSet | null>(null);
+  const [currentPosition, setCurrentPosition] = useState<Cell>([0, 0]);
+  const [moveHistory, setMoveHistory] = useState<Cell[]>([]);
+  const [trials, setTrials] = useState<TrialResult[]>([]);
+  const [countdown, setCountdown] = useState(0);
+
+  const timer = useTimer();
+
+  // Countdown during read phase
+  useEffect(() => {
+    if (phase !== 'read') return;
+
+    if (countdown > 0) {
+      const timeout = setTimeout(() => {
+        setCountdown(prev => prev - 1);
+      }, 1000);
+      return () => clearTimeout(timeout);
+    } else {
+      // Time's up, move to navigate
+      setPhase('navigate');
+    }
+  }, [phase, countdown]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (phase !== 'navigate' || !currentDirections) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const direction = DIRECTION_KEYS[e.key];
+      if (!direction) return;
+
+      e.preventDefault();
+
+      const newPosition = applyDirection(currentPosition, direction, settings.gridSize);
+      if (newPosition) {
+        setMoveHistory(prev => [...prev, currentPosition]);
+        setCurrentPosition(newPosition);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [phase, currentPosition, currentDirections, settings.gridSize]);
+
+  const startSession = useCallback(() => {
+    setTrials([]);
+    setCurrentRound(0);
+    timer.start();
+    startRound();
+  }, [timer]);
+
+  const startRound = useCallback(() => {
+    const directions = generateDirections(settings.gridSize, settings.stepCount);
+    setCurrentDirections(directions);
+    setCurrentPosition(directions.start);
+    setMoveHistory([]);
+    setCountdown(settings.readTime);
+    setPhase('read');
+  }, [settings.gridSize, settings.stepCount, settings.readTime]);
+
+  const handleSubmit = useCallback(() => {
+    if (!currentDirections) return;
+
+    const correct = cellsMatch(currentPosition, currentDirections.end);
+
+    const trial: TrialResult = {
+      directions: currentDirections,
+      finalPosition: currentPosition,
+      correct
+    };
+
+    const newTrials = [...trials, trial];
+    setTrials(newTrials);
+
+    // Show feedback
+    setPhase('feedback');
+
+    setTimeout(() => {
+      const nextRound = currentRound + 1;
+      if (nextRound >= settings.rounds) {
+        timer.stop();
+        setPhase('results');
+      } else {
+        setCurrentRound(nextRound);
+        startRound();
+      }
+    }, 1500);
+  }, [currentDirections, currentPosition, trials, currentRound, settings.rounds, timer, startRound]);
+
+  const handleUndo = useCallback(() => {
+    if (moveHistory.length === 0) return;
+    const previousPosition = moveHistory[moveHistory.length - 1];
+    setCurrentPosition(previousPosition);
+    setMoveHistory(prev => prev.slice(0, -1));
+  }, [moveHistory]);
+
+  const correctCount = trials.filter(t => t.correct).length;
+  const accuracy = trials.length > 0
+    ? Math.round((correctCount / trials.length) * 100)
+    : 0;
+
+  const finishSession = useCallback(() => {
+    const result: SessionResult = {
+      timestamp: Date.now(),
+      moduleId: 'mental-map',
+      operation: '+',
+      gridSize: `${settings.gridSize}×${settings.gridSize}`,
+      totalCells: trials.length,
+      correctCount,
+      accuracy,
+      timeMs: timer.elapsedMs
+    };
+    onSessionComplete(result);
+    onBack();
+  }, [settings.gridSize, trials.length, correctCount, accuracy, timer.elapsedMs, onSessionComplete, onBack]);
+
+  const resetSession = useCallback(() => {
+    setPhase('setup');
+    setTrials([]);
+    setCurrentRound(0);
+    timer.reset();
+  }, [timer]);
+
+  // Setup phase
+  if (phase === 'setup') {
+    return (
+      <div className="mental-map">
+        <header className="module-header">
+          <button className="back-button" onClick={onBack}>← Back</button>
+          <h2>Mental Map</h2>
+        </header>
+
+        <div className="setup-panel">
+          <p className="instructions">
+            Read the directions, then navigate with arrow keys.
+          </p>
+
+          <div className="setting-group">
+            <label>Grid Size</label>
+            <div className="button-group">
+              {[4, 5, 6].map(size => (
+                <button
+                  key={size}
+                  className={settings.gridSize === size ? 'active' : ''}
+                  onClick={() => setSettings(s => ({ ...s, gridSize: size }))}
+                >
+                  {size}×{size}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="setting-group">
+            <label>Steps</label>
+            <div className="button-group">
+              {[4, 5, 6].map(count => (
+                <button
+                  key={count}
+                  className={settings.stepCount === count ? 'active' : ''}
+                  onClick={() => setSettings(s => ({ ...s, stepCount: count }))}
+                >
+                  {count}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="setting-group">
+            <label>Rounds</label>
+            <div className="button-group">
+              {[1, 3, 5].map(r => (
+                <button
+                  key={r}
+                  className={settings.rounds === r ? 'active' : ''}
+                  onClick={() => setSettings(s => ({ ...s, rounds: r }))}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="setting-group">
+            <label>Read Time</label>
+            <div className="button-group">
+              {[3, 5, 8].map(t => (
+                <button
+                  key={t}
+                  className={settings.readTime === t ? 'active' : ''}
+                  onClick={() => setSettings(s => ({ ...s, readTime: t }))}
+                >
+                  {t}s
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button className="start-button" onClick={startSession}>
+            Start
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Grid renderer
+  const renderGrid = (showTarget: boolean) => {
+    const cells = [];
+
+    for (let row = 0; row < settings.gridSize; row++) {
+      for (let col = 0; col < settings.gridSize; col++) {
+        const key = cellKey([row, col]);
+        const isCurrentPosition = currentPosition[0] === row && currentPosition[1] === col;
+        const isTarget = showTarget && currentDirections &&
+          currentDirections.end[0] === row && currentDirections.end[1] === col;
+        const isStart = currentDirections &&
+          currentDirections.start[0] === row && currentDirections.start[1] === col;
+
+        let className = 'grid-cell';
+        let content: React.ReactNode = null;
+
+        if (phase === 'feedback') {
+          if (isCurrentPosition && isTarget) {
+            className += ' correct';
+            content = '✓';
+          } else if (isCurrentPosition) {
+            className += ' incorrect current';
+            content = '✗';
+          } else if (isTarget) {
+            className += ' target';
+            content = '◎';
+          }
+        } else if (isCurrentPosition) {
+          className += ' current';
+          content = '●';
+        } else if (phase === 'read' && isStart) {
+          className += ' start';
+          content = '○';
+        }
+
+        cells.push(
+          <div key={key} className={className}>
+            {content}
+          </div>
+        );
+      }
+    }
+
+    return (
+      <div
+        className="map-grid"
+        style={{
+          gridTemplateColumns: `repeat(${settings.gridSize}, 1fr)`,
+          gridTemplateRows: `repeat(${settings.gridSize}, 1fr)`
+        }}
+      >
+        {cells}
+      </div>
+    );
+  };
+
+  // Read phase
+  if (phase === 'read' && currentDirections) {
+    return (
+      <div className="mental-map">
+        <header className="module-header">
+          <span className="round-indicator">Round {currentRound + 1}/{settings.rounds}</span>
+          <span className="countdown">{countdown}s</span>
+        </header>
+
+        <div className="play-area">
+          <p className="phase-label">Memorize the directions</p>
+
+          <div className="directions-display">
+            {currentDirections.directions.map((dir, i) => (
+              <span key={i} className="direction-arrow">
+                {DIRECTION_ARROWS[dir]}
+              </span>
+            ))}
+          </div>
+
+          {renderGrid(false)}
+        </div>
+      </div>
+    );
+  }
+
+  // Navigate phase
+  if (phase === 'navigate' && currentDirections) {
+    return (
+      <div className="mental-map">
+        <header className="module-header">
+          <span className="round-indicator">Round {currentRound + 1}/{settings.rounds}</span>
+          <span className="timer">{timer.formatTime(timer.elapsedMs)}</span>
+        </header>
+
+        <div className="play-area">
+          <p className="phase-label">Navigate with arrow keys</p>
+
+          {renderGrid(false)}
+
+          <div className="navigate-actions">
+            <span className="move-count">{moveHistory.length} moves</span>
+            <button
+              className="undo-button"
+              onClick={handleUndo}
+              disabled={moveHistory.length === 0}
+            >
+              Undo
+            </button>
+            <button
+              className="submit-button"
+              onClick={handleSubmit}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Feedback phase
+  if (phase === 'feedback' && currentDirections) {
+    const lastTrial = trials[trials.length - 1];
+    return (
+      <div className="mental-map">
+        <header className="module-header">
+          <span className="round-indicator">Round {currentRound + 1}/{settings.rounds}</span>
+          <span className="timer">{timer.formatTime(timer.elapsedMs)}</span>
+        </header>
+
+        <div className="play-area">
+          <p className={`phase-label feedback-result ${lastTrial.correct ? 'correct' : 'incorrect'}`}>
+            {lastTrial.correct ? 'Correct!' : 'Wrong spot'}
+          </p>
+          {renderGrid(true)}
+        </div>
+      </div>
+    );
+  }
+
+  // Results phase
+  return (
+    <div className="mental-map">
+      <header className="module-header">
+        <button className="back-button" onClick={onBack}>← Back</button>
+        <h2>Results</h2>
+      </header>
+
+      <div className="results-panel">
+        <div className="result-main">
+          <span className="result-label">Accuracy</span>
+          <span className="result-value">{accuracy}%</span>
+        </div>
+
+        <div className="result-stats">
+          <div className="stat">
+            <span className="stat-label">Correct</span>
+            <span className="stat-value">{correctCount}/{trials.length}</span>
+          </div>
+          <div className="stat">
+            <span className="stat-label">Rounds</span>
+            <span className="stat-value">{trials.length}</span>
+          </div>
+          <div className="stat">
+            <span className="stat-label">Time</span>
+            <span className="stat-value">{timer.formatTime(timer.elapsedMs)}</span>
+          </div>
+        </div>
+
+        <div className="trial-summary">
+          {trials.map((trial, i) => (
+            <div key={i} className={`trial-row ${trial.correct ? 'correct' : 'incorrect'}`}>
+              <span className="trial-label">Round {i + 1}</span>
+              <span className="trial-result">{trial.correct ? '✓' : '✗'}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="result-actions">
+          <button onClick={resetSession}>Try Again</button>
+          <button onClick={finishSession}>Done</button>
+        </div>
+      </div>
+    </div>
+  );
+}

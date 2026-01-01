@@ -1,0 +1,352 @@
+.mental-map {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.mental-map .module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border);
+}
+
+.mental-map .round-indicator {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.mental-map .countdown {
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.mental-map .timer {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+/* Setup Panel */
+.mental-map .setup-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  gap: var(--space-lg);
+}
+
+.mental-map .instructions {
+  text-align: center;
+  color: var(--text-muted);
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.mental-map .setting-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.mental-map .setting-group label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mental-map .button-group {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.mental-map .button-group button {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-size: 0.9rem;
+}
+
+.mental-map .button-group button:hover {
+  border-color: var(--text-muted);
+}
+
+.mental-map .button-group button.active {
+  background: var(--text);
+  color: var(--bg-card);
+  border-color: var(--text);
+}
+
+.mental-map .start-button {
+  margin-top: var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
+  font-size: 1.1rem;
+  background: var(--text);
+  color: var(--bg-card);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: opacity var(--transition-normal);
+}
+
+.mental-map .start-button:hover {
+  opacity: 0.9;
+}
+
+/* Play Area */
+.mental-map .play-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  gap: var(--space-lg);
+}
+
+.mental-map .phase-label {
+  font-size: 1rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.mental-map .phase-label.feedback-result {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.mental-map .phase-label.feedback-result.correct {
+  color: var(--correct);
+}
+
+.mental-map .phase-label.feedback-result.incorrect {
+  color: var(--incorrect);
+}
+
+/* Directions Display */
+.mental-map .directions-display {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.mental-map .direction-arrow {
+  font-size: 2rem;
+  line-height: 1;
+  user-select: none;
+}
+
+/* Grid */
+.mental-map .map-grid {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  max-width: 350px;
+  aspect-ratio: 1;
+}
+
+.mental-map .grid-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  user-select: none;
+  transition: all var(--transition-fast);
+}
+
+/* Cell states */
+.mental-map .grid-cell.start {
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}
+
+.mental-map .grid-cell.current {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg-card);
+}
+
+.mental-map .grid-cell.target {
+  background: var(--correct-bg);
+  border-color: var(--correct);
+  color: var(--correct);
+}
+
+.mental-map .grid-cell.correct {
+  background: var(--correct);
+  border-color: var(--correct);
+  color: white;
+}
+
+.mental-map .grid-cell.incorrect {
+  background: var(--incorrect);
+  border-color: var(--incorrect);
+  color: white;
+}
+
+/* Navigate Actions */
+.mental-map .navigate-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.mental-map .move-count {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.mental-map .undo-button,
+.mental-map .submit-button {
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.mental-map .undo-button:hover:not(:disabled),
+.mental-map .submit-button:hover:not(:disabled) {
+  border-color: var(--text);
+}
+
+.mental-map .submit-button {
+  background: var(--text);
+  color: var(--bg-card);
+  border-color: var(--text);
+}
+
+.mental-map .undo-button:disabled,
+.mental-map .submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Results Panel */
+.mental-map .results-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-xl);
+  gap: var(--space-lg);
+}
+
+.mental-map .result-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.mental-map .result-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mental-map .result-value {
+  font-size: 4rem;
+  font-weight: 300;
+}
+
+.mental-map .result-stats {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.mental-map .stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.mental-map .stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.mental-map .stat-value {
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Trial Summary */
+.mental-map .trial-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 200px;
+}
+
+.mental-map .trial-row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-sm);
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+}
+
+.mental-map .trial-row.correct .trial-result {
+  color: var(--correct);
+}
+
+.mental-map .trial-row.incorrect .trial-result {
+  color: var(--incorrect);
+}
+
+.mental-map .trial-label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.mental-map .trial-result {
+  font-weight: 600;
+}
+
+/* Result Actions */
+.mental-map .result-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.mental-map .result-actions button {
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.mental-map .result-actions button:hover {
+  background: var(--text);
+  color: var(--bg-card);
+  border-color: var(--text);
+}
