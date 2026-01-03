@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { Home } from './pages/Home';
 import { ModuleWrapper } from './components/ModuleWrapper';
-import { useHashRouter } from './hooks/useHashRouter';
+import { useRouter } from './hooks/useRouter';
 import { useTimer } from './hooks/useTimer';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { modules } from './modules';
@@ -41,7 +41,7 @@ function pruneSessions(sessions: SessionResult[]): SessionResult[] {
 }
 
 function App() {
-  const { route, navigate } = useHashRouter();
+  const { route, navigate } = useRouter();
   const [stats, setStats] = useLocalStorage<Stats>('rewire-stats', { sessions: [] });
   const timer = useTimer();
   const hasPruned = useRef(false);
