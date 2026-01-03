@@ -29,7 +29,11 @@ export function Controls({ config, onConfigChange, onStart }: ControlsProps) {
   };
 
   const handleOperationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    onConfigChange({ ...config, operation: e.target.value as Operation });
+    const value = e.target.value;
+    const validOp = OPERATIONS.find(op => op.value === value);
+    if (validOp) {
+      onConfigChange({ ...config, operation: validOp.value });
+    }
   };
 
   const handleTimerToggle = () => {

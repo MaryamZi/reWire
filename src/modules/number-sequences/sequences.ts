@@ -189,37 +189,40 @@ const easyGenerators = [generateArithmetic, generateGeometric];
 const mediumGenerators = [generateSquares, generateFibonacci, generateTriangular, generateCubes];
 const hardGenerators = [generatePrimes, generateAlternating, generateDoubleArithmetic];
 
-// Track last used to avoid immediate repeats
-let lastGeneratorIndex = -1;
-let lastGeneratorPool: Function[] = [];
+// Create a picker that avoids immediate repeats, with encapsulated state
+function createPicker<T>(arr: readonly T[]): () => T {
+  let lastIndex = -1;
 
-function pickRandomAvoidRepeat<T>(arr: T[]): T {
-  if (arr !== lastGeneratorPool || arr.length <= 1) {
-    lastGeneratorPool = arr as Function[];
-    lastGeneratorIndex = -1;
-  }
+  return () => {
+    if (arr.length <= 1) {
+      return arr[0];
+    }
 
-  let idx: number;
-  do {
-    idx = Math.floor(Math.random() * arr.length);
-  } while (idx === lastGeneratorIndex && arr.length > 1);
+    let idx: number;
+    do {
+      idx = Math.floor(Math.random() * arr.length);
+    } while (idx === lastIndex);
 
-  lastGeneratorIndex = idx;
-  return arr[idx];
+    lastIndex = idx;
+    return arr[idx];
+  };
 }
 
-export function generateSequence(difficulty: Difficulty): Sequence {
-  if (difficulty === 'easy') {
-    return pickRandomAvoidRepeat(easyGenerators)();
-  }
-  if (difficulty === 'medium') {
-    return pickRandomAvoidRepeat(mediumGenerators)();
-  }
-  if (difficulty === 'hard') {
-    return pickRandomAvoidRepeat(hardGenerators)();
-  }
+// Each difficulty has its own picker with isolated state
+const pickEasy = createPicker(easyGenerators);
+const pickMedium = createPicker(mediumGenerators);
+const pickHard = createPicker(hardGenerators);
+const pickMixed = createPicker([...easyGenerators, ...mediumGenerators, ...hardGenerators]);
 
-  // Mixed: pick from all
-  const allGenerators = [...easyGenerators, ...mediumGenerators, ...hardGenerators];
-  return pickRandomAvoidRepeat(allGenerators)();
+export function generateSequence(difficulty: Difficulty): Sequence {
+  switch (difficulty) {
+    case 'easy':
+      return pickEasy()();
+    case 'medium':
+      return pickMedium()();
+    case 'hard':
+      return pickHard()();
+    case 'mixed':
+      return pickMixed()();
+  }
 }

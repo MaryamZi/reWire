@@ -109,11 +109,16 @@ export function Stroop({ onBack, onSessionComplete }: ModuleProps) {
     setLastCorrect(correct);
     setPhase('feedback');
 
+    const nextIndex = currentTrialIndex + 1;
+    const isLastTrial = nextIndex >= settings.trialCount;
+
+    if (isLastTrial) {
+      timer.stop();
+    }
+
     // Brief feedback, then next trial or results
     setTimeout(() => {
-      const nextIndex = currentTrialIndex + 1;
-      if (nextIndex >= settings.trialCount) {
-        timer.stop();
+      if (isLastTrial) {
         setPhase('results');
       } else {
         setCurrentTrialIndex(nextIndex);

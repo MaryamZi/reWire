@@ -59,13 +59,18 @@ export function SpellCheck({ onBack, onSessionComplete }: ModuleProps) {
     setLastResult({ wasRight, correctSpelling: trial.sourceWord, wordWasCorrect: trial.isCorrect });
     setPhase('feedback');
 
+    const nextIndex = currentTrialIndex + 1;
+    const isLastTrial = nextIndex >= trials.length;
+
+    if (isLastTrial) {
+      timer.stop();
+    }
+
     // Longer pause on mistakes so user can read the correct spelling
     const feedbackTime = wasRight ? 400 : 1200;
 
     setTimeout(() => {
-      const nextIndex = currentTrialIndex + 1;
-      if (nextIndex >= trials.length) {
-        timer.stop();
+      if (isLastTrial) {
         setPhase('results');
       } else {
         setCurrentTrialIndex(nextIndex);
@@ -152,7 +157,7 @@ export function SpellCheck({ onBack, onSessionComplete }: ModuleProps) {
           </div>
 
           <div className="key-hint">
-            Keyboard: <span className="key">C</span> correct <span className="key">W</span> wrong
+            Keyboard: <span className="key">←</span> or <span className="key">C</span> correct, <span className="key">→</span> or <span className="key">W</span> wrong
           </div>
 
           <button className="start-button" onClick={startSession}>

@@ -76,10 +76,15 @@ export function NumberSequences({ onBack, onSessionComplete }: ModuleProps) {
     setLastCorrect(correct);
     setPhase('feedback');
 
+    const nextIndex = currentTrialIndex + 1;
+    const isLastTrial = nextIndex >= settings.sequenceCount;
+
+    if (isLastTrial) {
+      timer.stop();
+    }
+
     setTimeout(() => {
-      const nextIndex = currentTrialIndex + 1;
-      if (nextIndex >= settings.sequenceCount) {
-        timer.stop();
+      if (isLastTrial) {
         setPhase('results');
       } else {
         setCurrentTrialIndex(nextIndex);

@@ -65,27 +65,6 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
     }
   }, [phase, countdown]);
 
-  // Keyboard navigation
-  useEffect(() => {
-    if (phase !== 'navigate' || !currentDirections) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const direction = DIRECTION_KEYS[e.key];
-      if (!direction) return;
-
-      e.preventDefault();
-
-      const newPosition = applyDirection(currentPosition, direction, settings.gridSize);
-      if (newPosition) {
-        setMoveHistory(prev => [...prev, currentPosition]);
-        setCurrentPosition(newPosition);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [phase, currentPosition, currentDirections, settings.gridSize]);
-
   const startSession = useCallback(() => {
     setTrials([]);
     setCurrentRound(0);
@@ -119,10 +98,15 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
     // Show feedback
     setPhase('feedback');
 
+    const nextRound = currentRound + 1;
+    const isLastRound = nextRound >= settings.rounds;
+
+    if (isLastRound) {
+      timer.stop();
+    }
+
     setTimeout(() => {
-      const nextRound = currentRound + 1;
-      if (nextRound >= settings.rounds) {
-        timer.stop();
+      if (isLastRound) {
         setPhase('results');
       } else {
         setCurrentRound(nextRound);
@@ -130,6 +114,33 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
       }
     }, 1500);
   }, [currentDirections, currentPosition, trials, currentRound, settings.rounds, timer, startRound]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (phase !== 'navigate' || !currentDirections) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSubmit();
+        return;
+      }
+
+      const direction = DIRECTION_KEYS[e.key];
+      if (!direction) return;
+
+      e.preventDefault();
+
+      const newPosition = applyDirection(currentPosition, direction, settings.gridSize);
+      if (newPosition) {
+        setMoveHistory(prev => [...prev, currentPosition]);
+        setCurrentPosition(newPosition);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [phase, currentPosition, currentDirections, settings.gridSize, handleSubmit]);
 
   const handleUndo = useCallback(() => {
     if (moveHistory.length === 0) return;

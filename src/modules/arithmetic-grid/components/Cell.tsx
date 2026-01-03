@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 
 interface CellProps {
   value: number | null;
@@ -9,6 +9,7 @@ interface CellProps {
   disabled: boolean;
   autoFocus?: boolean;
   onNavigate?: (direction: 'up' | 'down' | 'left' | 'right' | 'next') => void;
+  inputRef?: (el: HTMLInputElement | null) => void;
 }
 
 export function Cell({
@@ -19,13 +20,19 @@ export function Cell({
   showResult,
   disabled,
   autoFocus,
-  onNavigate
+  onNavigate,
+  inputRef: externalRef
 }: CellProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const internalRef = useRef<HTMLInputElement>(null);
+
+  const setRef = useCallback((el: HTMLInputElement | null) => {
+    (internalRef as React.MutableRefObject<HTMLInputElement | null>).current = el;
+    externalRef?.(el);
+  }, [externalRef]);
 
   useEffect(() => {
-    if (autoFocus && inputRef.current) {
-      inputRef.current.focus();
+    if (autoFocus && internalRef.current) {
+      internalRef.current.focus();
     }
   }, [autoFocus]);
 
@@ -53,13 +60,13 @@ export function Cell({
         onNavigate('down');
         break;
       case 'ArrowLeft':
-        if (inputRef.current?.selectionStart === 0) {
+        if (internalRef.current?.selectionStart === 0) {
           e.preventDefault();
           onNavigate('left');
         }
         break;
       case 'ArrowRight':
-        if (inputRef.current?.selectionStart === inputRef.current?.value.length) {
+        if (internalRef.current?.selectionStart === internalRef.current?.value.length) {
           e.preventDefault();
           onNavigate('right');
         }
@@ -79,7 +86,7 @@ export function Cell({
   return (
     <div className={className}>
       <input
-        ref={inputRef}
+        ref={setRef}
         type="text"
         inputMode="numeric"
         value={value ?? ''}

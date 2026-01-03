@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { Cell } from './Cell';
 import { getCorrectAnswer } from '../utils/grid';
 import type { Operation } from '../../../types';
@@ -26,11 +26,22 @@ export function Grid({
   onAnswerChange,
   onSubmit
 }: GridProps) {
+  const cellRefs = useRef<Map<string, HTMLInputElement>>(new Map());
 
   const focusCell = useCallback((row: number, col: number) => {
     const key = `${row}-${col}`;
-    const cell = document.querySelector(`[data-cell="${key}"] input`) as HTMLInputElement;
-    cell?.focus();
+    cellRefs.current.get(key)?.focus();
+  }, []);
+
+  const registerCellRef = useCallback((row: number, col: number) => {
+    const key = `${row}-${col}`;
+    return (el: HTMLInputElement | null) => {
+      if (el) {
+        cellRefs.current.set(key, el);
+      } else {
+        cellRefs.current.delete(key);
+      }
+    };
   }, []);
 
   const handleNavigate = useCallback((row: number, col: number, direction: 'up' | 'down' | 'left' | 'right' | 'next') => {
@@ -84,7 +95,7 @@ export function Grid({
             <tr key={rowIndex}>
               <th className="row-header">{rowNum}</th>
               {colHeaders.map((_, colIndex) => (
-                <td key={colIndex} data-cell={`${rowIndex}-${colIndex}`}>
+                <td key={colIndex}>
                   <Cell
                     value={userAnswers[rowIndex][colIndex]}
                     onChange={(value) => onAnswerChange(rowIndex, colIndex, value)}
@@ -94,6 +105,7 @@ export function Grid({
                     disabled={disabled}
                     autoFocus={rowIndex === 0 && colIndex === 0}
                     onNavigate={(dir) => handleNavigate(rowIndex, colIndex, dir)}
+                    inputRef={registerCellRef(rowIndex, colIndex)}
                   />
                 </td>
               ))}
