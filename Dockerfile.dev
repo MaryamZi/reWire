@@ -7,6 +7,11 @@ RUN npm install
 
 COPY . .
 
+# Set ownership for non-root user to allow Vite caching
+RUN chown -R 10001:0 /app
+
+USER 10001
+
 EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
