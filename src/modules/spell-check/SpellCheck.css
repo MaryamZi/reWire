@@ -87,9 +87,15 @@
 .spell-check .key-hint {
   font-size: 0.8rem;
   color: var(--text-muted);
-  display: flex;
+  display: none;
   align-items: center;
   gap: var(--space-xs);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .spell-check .key-hint {
+    display: flex;
+  }
 }
 
 .spell-check .key {
@@ -258,6 +264,51 @@
 .spell-check .stat-value {
   font-size: 1.1rem;
   font-variant-numeric: tabular-nums;
+}
+
+/* Mistakes Summary */
+.spell-check .mistakes-summary {
+  width: 100%;
+  max-width: 300px;
+}
+
+.spell-check .mistakes-summary h4 {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-sm);
+  text-align: center;
+}
+
+.spell-check .mistake-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.spell-check .mistake-shown {
+  color: var(--incorrect);
+  text-decoration: line-through;
+}
+
+.spell-check .mistake-arrow {
+  color: var(--text-muted);
+}
+
+.spell-check .mistake-correct {
+  color: var(--correct);
+  font-weight: 500;
+}
+
+.spell-check .mistake-note {
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 /* Result Actions */

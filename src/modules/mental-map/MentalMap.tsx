@@ -7,6 +7,7 @@ import {
   DIRECTION_ARROWS,
   DIRECTION_KEYS,
   type Cell,
+  type Direction,
   type DirectionSet
 } from './paths';
 import type { ModuleProps } from '../../types/module';
@@ -115,6 +116,17 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
     }, 1500);
   }, [currentDirections, currentPosition, trials, currentRound, settings.rounds, timer, startRound]);
 
+  // Move handler for both keyboard and touch
+  const handleMove = useCallback((direction: Direction) => {
+    if (phase !== 'navigate' || !currentDirections) return;
+
+    const newPosition = applyDirection(currentPosition, direction, settings.gridSize);
+    if (newPosition) {
+      setMoveHistory(prev => [...prev, currentPosition]);
+      setCurrentPosition(newPosition);
+    }
+  }, [phase, currentPosition, currentDirections, settings.gridSize]);
+
   // Keyboard navigation
   useEffect(() => {
     if (phase !== 'navigate' || !currentDirections) return;
@@ -130,17 +142,12 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
       if (!direction) return;
 
       e.preventDefault();
-
-      const newPosition = applyDirection(currentPosition, direction, settings.gridSize);
-      if (newPosition) {
-        setMoveHistory(prev => [...prev, currentPosition]);
-        setCurrentPosition(newPosition);
-      }
+      handleMove(direction);
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [phase, currentPosition, currentDirections, settings.gridSize, handleSubmit]);
+  }, [phase, currentDirections, handleSubmit, handleMove]);
 
   const handleUndo = useCallback(() => {
     if (moveHistory.length === 0) return;
@@ -187,7 +194,7 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
 
         <div className="setup-panel">
           <p className="instructions">
-            Read the directions, then navigate with arrow keys.
+            Memorize the directions, then navigate to the target.
           </p>
 
           <div className="setting-group">
@@ -350,9 +357,40 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
         </header>
 
         <div className="play-area">
-          <p className="phase-label">Navigate with arrow keys</p>
+          <p className="phase-label">Navigate to target</p>
 
           {renderGrid(false)}
+
+          <div className="dpad">
+            <button
+              className="dpad-btn dpad-up"
+              onClick={() => handleMove('up')}
+              aria-label="Move up"
+            >
+              ↑
+            </button>
+            <button
+              className="dpad-btn dpad-left"
+              onClick={() => handleMove('left')}
+              aria-label="Move left"
+            >
+              ←
+            </button>
+            <button
+              className="dpad-btn dpad-right"
+              onClick={() => handleMove('right')}
+              aria-label="Move right"
+            >
+              →
+            </button>
+            <button
+              className="dpad-btn dpad-down"
+              onClick={() => handleMove('down')}
+              aria-label="Move down"
+            >
+              ↓
+            </button>
+          </div>
 
           <div className="navigate-actions">
             <span className="move-count">{moveHistory.length} moves</span>

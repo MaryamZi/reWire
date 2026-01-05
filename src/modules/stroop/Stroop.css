@@ -87,9 +87,15 @@
 .stroop .key-hint {
   font-size: 0.8rem;
   color: var(--text-muted);
-  display: flex;
+  display: none;
   align-items: center;
   gap: var(--space-xs);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .stroop .key-hint {
+    display: flex;
+  }
 }
 
 .stroop .key {

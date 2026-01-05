@@ -244,6 +244,30 @@ export function SpellCheck({ onBack, onSessionComplete }: ModuleProps) {
           </div>
         </div>
 
+        {completedTrials.some(t => !t.wasRight) && (
+          <div className="mistakes-summary">
+            <h4>Mistakes</h4>
+            {completedTrials.filter(t => !t.wasRight).map((trial, i) => (
+              <div key={i} className="mistake-row">
+                {trial.isCorrect ? (
+                  // User said "wrong" but word was correctly spelled
+                  <>
+                    <span className="mistake-correct">{trial.word}</span>
+                    <span className="mistake-note">was correct</span>
+                  </>
+                ) : (
+                  // User said "correct" but word was misspelled
+                  <>
+                    <span className="mistake-shown">{trial.word}</span>
+                    <span className="mistake-arrow">→</span>
+                    <span className="mistake-correct">{trial.sourceWord}</span>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="result-actions">
           <button onClick={resetSession}>Try Again</button>
           <button onClick={finishSession}>Done</button>

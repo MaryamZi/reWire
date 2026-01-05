@@ -243,6 +243,44 @@
   cursor: not-allowed;
 }
 
+/* D-pad Controls */
+.mental-map .dpad {
+  display: grid;
+  grid-template-areas:
+    ". up ."
+    "left . right"
+    ". down .";
+  grid-template-columns: repeat(3, 3rem);
+  grid-template-rows: repeat(3, 3rem);
+  gap: 0.25rem;
+}
+
+.mental-map .dpad-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.mental-map .dpad-btn:active {
+  background: var(--text);
+  color: var(--bg-card);
+  border-color: var(--text);
+}
+
+.mental-map .dpad-up { grid-area: up; }
+.mental-map .dpad-down { grid-area: down; }
+.mental-map .dpad-left { grid-area: left; }
+.mental-map .dpad-right { grid-area: right; }
+
 /* Results Panel */
 .mental-map .results-panel {
   flex: 1;
