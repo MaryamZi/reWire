@@ -10,11 +10,9 @@
   margin-bottom: var(--space-xl);
 }
 
-.app-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  color: var(--text);
+.app-logo {
+  height: 2.5rem;
+  width: auto;
 }
 
 .tagline {

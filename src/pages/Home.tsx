@@ -1,5 +1,6 @@
 import { ModuleCard } from '../components/ModuleCard';
 import { Stats } from '../components/Stats';
+import logo from '../assets/logo.svg';
 import type { ModuleDefinition } from '../types/module';
 import type { Stats as StatsType } from '../types';
 
@@ -20,7 +21,7 @@ export function Home({ modules, stats, onModuleSelect, onClearStats, formatTime 
   return (
     <>
       <header className="app-header">
-        <h1>reWire</h1>
+        <img src={logo} alt="reWire" className="app-logo" />
         <p className="tagline">Train your brain, one session at a time</p>
         <button className="random-button" onClick={handleRandom}>
           Random
