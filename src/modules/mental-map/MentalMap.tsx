@@ -2,12 +2,14 @@ import { useState, useCallback, useEffect } from 'react';
 import { useTimer } from '../../hooks/useTimer';
 import {
   generateDirections,
-  applyDirection,
+  applyRelativeDirection,
   cellsMatch,
-  DIRECTION_ARROWS,
+  directionsToText,
   DIRECTION_KEYS,
+  FACING_ARROWS,
   type Cell,
-  type Direction,
+  type Facing,
+  type RelativeDirection,
   type DirectionSet
 } from './paths';
 import type { ModuleProps } from '../../types/module';
@@ -29,6 +31,11 @@ interface TrialResult {
   correct: boolean;
 }
 
+interface PositionState {
+  cell: Cell;
+  facing: Facing;
+}
+
 function cellKey(cell: Cell): string {
   return `${cell[0]},${cell[1]}`;
 }
@@ -45,7 +52,8 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
   const [currentRound, setCurrentRound] = useState(0);
   const [currentDirections, setCurrentDirections] = useState<DirectionSet | null>(null);
   const [currentPosition, setCurrentPosition] = useState<Cell>([0, 0]);
-  const [moveHistory, setMoveHistory] = useState<Cell[]>([]);
+  const [currentFacing, setCurrentFacing] = useState<Facing>('north');
+  const [moveHistory, setMoveHistory] = useState<PositionState[]>([]);
   const [trials, setTrials] = useState<TrialResult[]>([]);
   const [countdown, setCountdown] = useState(0);
 
@@ -77,6 +85,7 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
     const directions = generateDirections(settings.gridSize, settings.stepCount);
     setCurrentDirections(directions);
     setCurrentPosition(directions.start);
+    setCurrentFacing(directions.startFacing);
     setMoveHistory([]);
     setCountdown(settings.readTime);
     setPhase('read');
@@ -117,15 +126,16 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
   }, [currentDirections, currentPosition, trials, currentRound, settings.rounds, timer, startRound]);
 
   // Move handler for both keyboard and touch
-  const handleMove = useCallback((direction: Direction) => {
+  const handleMove = useCallback((direction: RelativeDirection) => {
     if (phase !== 'navigate' || !currentDirections) return;
 
-    const newPosition = applyDirection(currentPosition, direction, settings.gridSize);
-    if (newPosition) {
-      setMoveHistory(prev => [...prev, currentPosition]);
-      setCurrentPosition(newPosition);
+    const result = applyRelativeDirection(currentPosition, currentFacing, direction, settings.gridSize);
+    if (result) {
+      setMoveHistory(prev => [...prev, { cell: currentPosition, facing: currentFacing }]);
+      setCurrentPosition(result.cell);
+      setCurrentFacing(result.facing);
     }
-  }, [phase, currentPosition, currentDirections, settings.gridSize]);
+  }, [phase, currentPosition, currentFacing, currentDirections, settings.gridSize]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -151,8 +161,9 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
 
   const handleUndo = useCallback(() => {
     if (moveHistory.length === 0) return;
-    const previousPosition = moveHistory[moveHistory.length - 1];
-    setCurrentPosition(previousPosition);
+    const previous = moveHistory[moveHistory.length - 1];
+    setCurrentPosition(previous.cell);
+    setCurrentFacing(previous.facing);
     setMoveHistory(prev => prev.slice(0, -1));
   }, [moveHistory]);
 
@@ -266,7 +277,7 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
   }
 
   // Grid renderer
-  const renderGrid = (showTarget: boolean) => {
+  const renderGrid = (showTarget: boolean, showFacing: boolean = true) => {
     const cells = [];
 
     for (let row = 0; row < settings.gridSize; row++) {
@@ -294,10 +305,10 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
           }
         } else if (isCurrentPosition) {
           className += ' current';
-          content = '●';
+          content = showFacing ? FACING_ARROWS[currentFacing] : '●';
         } else if (phase === 'read' && isStart) {
           className += ' start';
-          content = '○';
+          content = currentDirections ? FACING_ARROWS[currentDirections.startFacing] : '○';
         }
 
         cells.push(
@@ -334,11 +345,9 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
           <p className="phase-label">Memorize the directions</p>
 
           <div className="directions-display">
-            {currentDirections.directions.map((dir, i) => (
-              <span key={i} className="direction-arrow">
-                {DIRECTION_ARROWS[dir]}
-              </span>
-            ))}
+            <p className="directions-text">
+              {directionsToText(currentDirections.directions)}
+            </p>
           </div>
 
           {renderGrid(false)}
@@ -364,29 +373,29 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
           <div className="dpad">
             <button
               className="dpad-btn dpad-up"
-              onClick={() => handleMove('up')}
-              aria-label="Move up"
+              onClick={() => handleMove('forward')}
+              aria-label="Move forward"
             >
               ↑
             </button>
             <button
               className="dpad-btn dpad-left"
               onClick={() => handleMove('left')}
-              aria-label="Move left"
+              aria-label="Turn left and move"
             >
               ←
             </button>
             <button
               className="dpad-btn dpad-right"
               onClick={() => handleMove('right')}
-              aria-label="Move right"
+              aria-label="Turn right and move"
             >
               →
             </button>
             <button
               className="dpad-btn dpad-down"
-              onClick={() => handleMove('down')}
-              aria-label="Move down"
+              onClick={() => handleMove('back')}
+              aria-label="Turn back and move"
             >
               ↓
             </button>
@@ -427,7 +436,7 @@ export function MentalMap({ onBack, onSessionComplete }: ModuleProps) {
           <p className={`phase-label feedback-result ${lastTrial.correct ? 'correct' : 'incorrect'}`}>
             {lastTrial.correct ? 'Correct!' : 'Wrong spot'}
           </p>
-          {renderGrid(true)}
+          {renderGrid(true, false)}
         </div>
       </div>
     );
