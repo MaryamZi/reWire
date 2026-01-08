@@ -10,6 +10,14 @@
   align-items: center;
   padding: var(--space-md) var(--space-lg);
   border-bottom: 1px solid var(--border);
+  gap: var(--space-md);
+}
+
+.digit-span .module-header h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .digit-span .span-indicator {
@@ -142,7 +150,8 @@
 
 /* Input Area */
 .digit-span .input-area input {
-  width: 200px;
+  width: 100%;
+  max-width: 300px;
   padding: var(--space-md);
   font-size: 1.5rem;
   text-align: center;
