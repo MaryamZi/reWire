@@ -4,10 +4,17 @@ export type Route =
   | { page: 'home' }
   | { page: 'module'; moduleId: string };
 
+// Base path from Vite config (e.g., '/' for local, '/reWire/' for subpath deployments)
+const BASE_PATH = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 function parsePath(): Route {
   const path = window.location.pathname;
-  if (path.startsWith('/module/')) {
-    return { page: 'module', moduleId: path.slice(8) };
+  const relativePath = path.startsWith(BASE_PATH)
+    ? path.slice(BASE_PATH.length)
+    : path;
+
+  if (relativePath.startsWith('/module/')) {
+    return { page: 'module', moduleId: relativePath.slice(8) };
   }
   return { page: 'home' };
 }
@@ -22,8 +29,9 @@ export function useRouter() {
   }, []);
 
   const navigate = useCallback((newRoute: Route) => {
-    const path = newRoute.page === 'home' ? '/' : `/module/${newRoute.moduleId}`;
-    window.history.pushState(null, '', path);
+    const relativePath = newRoute.page === 'home' ? '/' : `/module/${newRoute.moduleId}`;
+    const fullPath = `${BASE_PATH}${relativePath}`;
+    window.history.pushState(null, '', fullPath);
     setRoute(newRoute);
   }, []);
 
